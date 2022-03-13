@@ -23,7 +23,6 @@ def streamerList(file_path, stream_platform):
             for row in StreamerStatus:
                 s = "".join(map(str, row))
                 file.write(s+'\n')
-            file.close()
     except Exception as e:
         print(e)
     return

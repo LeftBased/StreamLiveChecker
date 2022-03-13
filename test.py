@@ -1,6 +1,16 @@
 from urllib.request import urlopen
+import os
 StreamerStatus = []
 StreamerStatus2 = []
+def removeStatusFiles():
+    try:
+        if os.path.exists("streamers_twitch_status.txt"):
+            os.remove("streamers_twitch_status.txt")
+        if os.path.exists("streamers_youtube_status.txt"):
+            os.remove("streamers_youtube_status.txt")
+    except Exception as e:
+        print(e)
+    return
 def TwitchStreamerList(file_path):
     if file_path == '' or None:
         print("Error: No streamer list selected.")
@@ -24,7 +34,6 @@ def TwitchStreamerList(file_path):
     except Exception as e:
         print(e)
     return
-
 def YouTubeStreamerList(file_path):
     if file_path == '' or None:
         print("Error: No streamer list selected.")
@@ -49,7 +58,6 @@ def YouTubeStreamerList(file_path):
     except Exception as e:
         print(e)
     return
-
 def CheckTwitchStream(streamer):
     cts = None
     try:
@@ -92,6 +100,6 @@ def CheckYouTubeStream(streamer, subtype):
     except Exception as e:
         print(e)
     return
-
+removeStatusFiles()
 TwitchStreamerList('streamers_twitch.txt')
 YouTubeStreamerList('streamers_youtube.txt')

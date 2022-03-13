@@ -1,5 +1,6 @@
 from urllib.request import urlopen
 StreamerStatus = []
+StreamerStatus2 = []
 def TwitchStreamerList(file_path):
     if file_path == '' or None:
         print("Error: No streamer list selected.")
@@ -34,12 +35,12 @@ def YouTubeStreamerList(file_path):
             streamerX = streamer.split(',')
             X = CheckYouTubeStream(streamerX[0], streamerX[1])
             if X == True:
-                StreamerStatus.append(streamerX[0] + " : ONLINE")
+                StreamerStatus2.append(streamerX[0] + " : ONLINE")
             else:
-                StreamerStatus.append(streamerX[0] + " : OFFLINE")
+                StreamerStatus2.append(streamerX[0] + " : OFFLINE")
         with open("streamers_youtube_status.txt","a") as file:
             file.write("[YouTube Streamer Status]\n")
-            for row in StreamerStatus:
+            for row in StreamerStatus2:
                 s = "".join(map(str, row))
                 file.write(s+'\n')
     except Exception as e:

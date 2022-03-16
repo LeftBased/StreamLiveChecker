@@ -1,4 +1,3 @@
-from xml.etree.ElementTree import C14NWriterTarget
 import requests
 from lxml import html
 import os

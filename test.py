@@ -1,7 +1,14 @@
-from urllib.request import urlopen
+from xml.etree.ElementTree import C14NWriterTarget
+import requests
+from lxml import html
 import os
 StreamerStatus = []
 StreamerStatus2 = []
+
+def setYTName(theName):
+    global yt_name
+    yt_name = theName
+
 def removeStatusFiles():
     try:
         if os.path.exists("streamers_twitch_status.txt"):
@@ -46,9 +53,11 @@ def YouTubeStreamerList(file_path):
             streamerX = streamer.split(',')
             X = CheckYouTubeStream(streamerX[0], streamerX[1])
             if X == True:
-                StreamerStatus2.append(streamerX[0] + " : ONLINE")
+                streamerName = str(yt_name)
+                StreamerStatus2.append("Channel Name: " + streamerName + " - " + streamerX[0] + " : ONLINE")
             else:
-                StreamerStatus2.append(streamerX[0] + " : OFFLINE")
+                streamerName = str(yt_name)
+                StreamerStatus2.append("Channel Name: " + streamerName + " - " + streamerX[0] + " : OFFLINE")
         with open("streamers_youtube_status.txt","a") as file2:
             file2.write("[YouTube Streamer Status]\n")
             for row in StreamerStatus2:
@@ -61,11 +70,9 @@ def YouTubeStreamerList(file_path):
 def CheckTwitchStream(streamer):
     cts = None
     try:
-        response = urlopen("https://twitch.tv/" + streamer)
-        body = response.read()
-        decoded_body = body.decode("utf-8")
-        response.close()
-        if "isLiveBroadcast" in decoded_body:
+        response = requests.get("https://twitch.tv/" + streamer)
+        body = response.text
+        if "isLiveBroadcast" in body:
             print(streamer + " is live streaming on Twitch.TV")
             cts = True
             return cts
@@ -78,23 +85,27 @@ def CheckTwitchStream(streamer):
     return
 def CheckYouTubeStream(streamer, subtype):
     cys = None
+    body = ""
+    chan_name = ""
     try: #hqdefault_live.jpg
         if subtype == "0": #0 = channel, 1 = vanity
-            response = urlopen("https://www.youtube.com/channel/" + streamer)
-            body = response.read()
-            decoded_body = body.decode("utf-8")
-            response.close()
+            response = requests.get("https://www.youtube.com/channel/" + streamer)
+            body = response.text
+            tree = html.fromstring(response.content) 
+            chan_name = tree.xpath('/html/body/title')[0].text
+            setYTName(chan_name[0:-10])
         else:
-            response = urlopen("https://www.youtube.com/c/" + streamer)
-            body = response.read()
-            decoded_body = body.decode("utf-8")
-            response.close()
-        if "hqdefault_live.jpg" in decoded_body:
-            print(streamer + " is live streaming on YouTube.com")
+            response = requests.get("https://www.youtube.com/c/" + streamer)
+            body = response.text
+            tree = html.fromstring(response.content) 
+            chan_name = tree.xpath('/html/body/title')[0].text
+            setYTName(chan_name[0:-10])
+        if "hqdefault_live.jpg" in body:
+            print("Channel Name: " + yt_name + " - " + streamer + " is live streaming on YouTube.com")
             cys = True
             return cys
         else:
-            print(streamer + " is offline on YouTube.com")
+            print("Channel Name: " + yt_name + " - " + streamer + " is offline on YouTube.com")
             cys = False
             return cys
     except Exception as e:

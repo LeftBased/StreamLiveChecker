@@ -3,11 +3,9 @@ from lxml import html
 import os
 StreamerStatus = []
 StreamerStatus2 = []
-
 def setYTName(theName):
     global yt_name
     yt_name = theName
-
 def removeStatusFiles():
     try:
         if os.path.exists("streamers_twitch_status.txt"):

@@ -66,8 +66,8 @@ def YouTubeStreamerList(file_path):
     return
 def CheckTwitchStream(streamer):
     cts = None
-    try:
-        response = requests.get("https://twitch.tv/" + streamer)
+    try: #added 4 second timeout
+        response = requests.get("https://twitch.tv/" + streamer, timeout=4)
         body = response.text
         if "isLiveBroadcast" in body:
             print(streamer + " is live streaming on Twitch.TV")
@@ -86,13 +86,13 @@ def CheckYouTubeStream(streamer, subtype):
     chan_name = ""
     try: #hqdefault_live.jpg
         if subtype == "0": #0 = channel, 1 = vanity
-            response = requests.get("https://www.youtube.com/channel/" + streamer)
+            response = requests.get("https://www.youtube.com/channel/" + streamer, timeout=4)
             body = response.text
             tree = html.fromstring(response.content) 
             chan_name = tree.xpath('/html/body/title')[0].text
             setYTName(chan_name[0:-10])
         else:
-            response = requests.get("https://www.youtube.com/c/" + streamer)
+            response = requests.get("https://www.youtube.com/c/" + streamer, timeout=4)
             body = response.text
             tree = html.fromstring(response.content) 
             chan_name = tree.xpath('/html/body/title')[0].text
